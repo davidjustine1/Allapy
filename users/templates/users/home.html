@@ -1,0 +1,554 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Home - Alapuzha House Boat{% endblock %}
+
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+    }
+
+    body {
+        background-color: #f7f9fc;
+        color: #333;
+        font-size: 16px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .welcome-section {
+        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.95) 100%);
+        padding: 3rem;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        margin-bottom: 3rem;
+        border: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .welcome-section h2 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 2rem;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .user-info {
+        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%);
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.02);
+        border: 1px solid rgba(0,0,0,0.03);
+        margin-bottom: 2.5rem;
+    }
+
+    .user-info p {
+        font-size: 1.1rem;
+        color: #4a4a4a;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .user-info p strong {
+        color: #1a1a1a;
+        font-weight: 600;
+        min-width: 120px;
+    }
+
+    .houseboat-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%);
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.02);
+        border: 1px solid rgba(0,0,0,0.03);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .houseboat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+        border-color: rgba(0,0,0,0.05);
+    }
+
+    .houseboat-card h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 1.5rem;
+        line-height: 1.3;
+    }
+
+    .rating-badge {
+        background: linear-gradient(135deg, rgba(248,249,250,0.9) 0%, rgba(241,243,245,0.9) 100%);
+        padding: 0.8rem 1.5rem;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-size: 1rem;
+        color: #4a4a4a;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .amenities-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.2rem;
+        margin: 2rem 0;
+    }
+
+    .amenity-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: #4a4a4a;
+        font-size: 1rem;
+        padding: 0.8rem;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(248,249,250,0.9) 0%, rgba(241,243,245,0.9) 100%);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .amenity-item:hover {
+        background: linear-gradient(135deg, rgba(241,243,245,0.9) 0%, rgba(248,249,250,0.9) 100%);
+        transform: translateX(5px);
+        border-color: rgba(0,0,0,0.05);
+    }
+
+    .amenity-icon {
+        font-size: 1.2rem;
+    }
+
+    .price-tag {
+        background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: inline-block;
+        margin: 2rem 0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .btn {
+        background-color: #3498db;
+        color: white;
+        padding: 12px 24px;
+        font-size: 16px;
+        border-radius: 30px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn span {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .btn:hover {
+        background-color: #2980b9;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .btn:focus {
+        outline: none;
+        box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+    }
+
+    .btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .btn:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .filters-section {
+        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%);
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.02);
+        margin-bottom: 3rem;
+        border: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .filters-section h3 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 2rem;
+    }
+
+    .filter-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .filter-group label {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #4a4a4a;
+        margin-bottom: 0.5rem;
+    }
+
+    .filter-select {
+        width: 100%;
+        padding: 12px 24px;
+        border-radius: 30px;
+        border: 1px solid rgba(0,0,0,0.05);
+        font-size: 16px;
+        color: #333;
+        background: white;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.2em;
+    }
+
+    .filter-select:hover {
+        border-color: #3498db;
+        transform: translateY(-2px);
+    }
+
+    .filter-select:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+    }
+
+    #houseboat-listings {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2.5rem;
+    }
+
+    .recommendations-btn {
+        background-color: #3498db;
+        color: white;
+        padding: 1.2rem 3rem;
+        border-radius: 30px;
+        font-weight: 500;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .recommendations-btn:hover {
+        background-color: #2980b9;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .recommendations-btn:focus {
+        outline: none;
+        box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+    }
+
+    .recommendations-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+</style>
+
+<div class="container">
+    <div class="welcome-section">
+        <h2>Welcome to Alapuzha House Boat</h2>
+        <div class="user-info">
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>User ID:</strong> {{ user.id }}</p>
+            <p><strong>Member since:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+        </div>
+        <p style="color: #4a4a4a; line-height: 1.8; font-size: 1.1rem;">
+            Experience the serene beauty of Kerala's backwaters with our premium houseboat services. 
+            Your account is now ready to explore our exclusive offers and make reservations.
+        </p>
+        
+        <div class="recommendations-section">
+            <button class="btn recommendations-btn" onclick="toggleRecommendations()">
+                View Houseboats
+            </button>
+            
+            <div id="recommendations-content" style="display: none;">
+                <div class="filters-section">
+                    <h3>Filter Houseboats</h3>
+                    <form method="POST" action="{% url 'recommendations' %}">
+                        {% csrf_token %}
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;">
+                            <div class="filter-group">
+                                <label>Capacity</label>
+                                <select name="capacity" id="capacityFilter" class="filter-select">
+                                    <option value="all">All</option>
+                                    <option value="6">Up to 6 people</option>
+                                    <option value="15">Up to 15 people</option>
+                                    <option value="24">Up to 24 people</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Number of Bedrooms</label>
+                                <select name="bedrooms" id="bedroomsFilter" class="filter-select">
+                                    <option value="all">All</option>
+                                    <option value="1">1 Bedroom</option>
+                                    <option value="2">2 Bedrooms</option>
+                                    <option value="3">3+ Bedrooms</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Rating</label>
+                                <select name="rating" id="ratingFilter" class="filter-select">
+                                    <option value="all">All</option>
+                                    <option value="4">4+ Stars</option>
+                                    <option value="3">3+ Stars</option>
+                                    <option value="2">2+ Stars</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Houseboat Type</label>
+                                <select name="type" id="typeFilter" class="filter-select">
+                                    <option value="all">All Types</option>
+                                    <option value="Luxury">Luxury</option>
+                                    <option value="Standard">Standard</option>
+                                    <option value="Budget">Budget</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn" style="margin-top: 2rem;">
+                            Apply Filters
+                        </button>
+                    </form>
+                </div>
+
+                <div id="houseboat-listings">
+                    <!-- Houseboat 1 -->
+                    <div class="houseboat-card">
+                        <a href="{% url 'houseboat_detail' houseboat_id=173 %}" style="text-decoration: none; color: inherit;">
+                            <h3>Luxury Deluxe Houseboat</h3>
+                            <div class="rating-badge">
+                                <span style="color: #f39c12;">★★★★★</span>
+                                <span>(4.8/5)</span>
+                            </div>
+                            <div class="amenities-grid">
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">❄️</span>
+                                    <span>3 AC Bedrooms</span>
+                                </div>
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">🍳</span>
+                                    <span>Modern Kitchen</span>
+                                </div>
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">🛋️</span>
+                                    <span>Upper Deck Lounge</span>
+                                </div>
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">🚿</span>
+                                    <span>3 Bathrooms</span>
+                                </div>
+                            </div>
+                            <div class="price-tag">₹25,000/night</div>
+                        </a>
+                        <div class="button-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <button class="btn" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=173 %}'">View Details</button>
+                            <button class="btn" style="background-color: #28a745;" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=173 %}#booking'">Book Now</button>
+                        </div>
+                    </div>
+
+                    <!-- Houseboat 2 -->
+                    <div class="houseboat-card">
+                        <a href="{% url 'houseboat_detail' houseboat_id=321 %}" style="text-decoration: none; color: inherit;">
+                            <h3>Premium Family Houseboat</h3>
+                            <div class="rating-badge">
+                                <span style="color: #f39c12;">★★★★☆</span>
+                                <span>(4.2/5)</span>
+                            </div>
+                            <div class="amenities-grid">
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">❄️</span>
+                                    <span>2 AC Bedrooms</span>
+                                </div>
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">👨‍👩‍👧‍👦</span>
+                                    <span>Family Room</span>
+                                </div>
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">🎮</span>
+                                    <span>Kids Play Area</span>
+                                </div>
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">🚿</span>
+                                    <span>2 Bathrooms</span>
+                                </div>
+                            </div>
+                            <div class="price-tag">₹18,000/night</div>
+                        </a>
+                        <div class="button-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <button class="btn" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=321 %}'">View Details</button>
+                            <button class="btn" style="background-color: #28a745;" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=321 %}#booking'">Book Now</button>
+                        </div>
+                    </div>
+
+                    <!-- Houseboat 3 -->
+                    <div class="houseboat-card"> 
+                        <a href="{% url 'houseboat_detail' houseboat_id=322 %}" style="text-decoration: none; color: inherit;">
+                            <h3>Traditional Eco Houseboat</h3>
+                            <div class="rating-badge">
+                                <span style="color: #f39c12;">★★★★★</span>
+                                <span>(4.9/5)</span>
+                            </div>
+                            <div class="amenities-grid">
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">🌿</span>
+                                    <span>Eco-friendly Materials</span>
+                                </div>
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">🌞</span>
+                                    <span>Natural Ventilation</span>
+                                </div>
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">🏠</span>
+                                    <span>Traditional Design</span>
+                                </div>
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">🚿</span>
+                                    <span>1 Bathroom</span>
+                                </div>
+                            </div>
+                            <div class="price-tag">₹12,000/night</div>
+                        </a>
+                        <div class="button-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <button class="btn" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=322 %}'">View Details</button>
+                            <button class="btn" style="background-color: #28a745;" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=322 %}#booking'">Book Now</button>
+                        </div>
+                    </div>
+
+                    <!-- Houseboat 4 -->
+                    <div class="houseboat-card">
+                        <a href="{% url 'houseboat_detail' houseboat_id=4 %}" style="text-decoration: none; color: inherit;">
+                            <h3>Royal Suite Houseboat</h3>
+                            <div class="rating-badge">
+                                <span style="color: #f39c12;">★★★★★</span>
+                                <span>(4.7/5)</span>
+                            </div>
+                            <div class="amenities-grid">
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">❄️</span>
+                                    <span>4 AC Bedrooms</span>
+                                </div>
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">🏊‍♂️</span>
+                                    <span>Private Pool</span>
+                                </div>
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">🍷</span>
+                                    <span>Wine Cellar</span>
+                                </div>
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">🚿</span>
+                                    <span>4 Bathrooms</span>
+                                </div>
+                            </div>
+                            <div class="price-tag">₹35,000/night</div>
+                        </a>
+                        <div class="button-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <button class="btn" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=4 %}'">View Details</button>
+                            <button class="btn" style="background-color: #28a745;" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=4 %}#booking'">Book Now</button>
+                        </div>
+                    </div>
+
+                    <!-- Houseboat 5 -->
+                    <div class="houseboat-card">
+                        <a href="{% url 'houseboat_detail' houseboat_id=5 %}" style="text-decoration: none; color: inherit;">
+                            <h3>Romantic Couple Houseboat</h3>
+                            <div class="rating-badge">
+                                <span style="color: #f39c12;">★★★★★</span>
+                                <span>(4.6/5)</span>
+                            </div>
+                            <div class="amenities-grid">
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">❄️</span>
+                                    <span>1 AC Bedroom</span>
+                                </div>
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">🌅</span>
+                                    <span>Sunset Deck</span>
+                                </div>
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">🍽️</span>
+                                    <span>Private Dining</span>
+                                </div>
+                                <div class="amenity-item">
+                                    <span class="amenity-icon">🚿</span>
+                                    <span>1 Bathroom</span>
+                                </div>
+                            </div>
+                            <div class="price-tag">₹15,000/night</div>
+                        </a>
+                        <div class="button-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <button class="btn" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=5 %}'">View Details</button>
+                            <button class="btn" style="background-color: #28a745;" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=5 %}#booking'">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleRecommendations() {
+    const content = document.getElementById('recommendations-content');
+    const button = document.querySelector('.recommendations-btn');
+    
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        button.textContent = 'Hide Houseboats';
+        button.style.background = 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)';
+    } else {
+        content.style.display = 'none';
+        button.textContent = 'View Houseboats';
+        button.style.background = 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)';
+    }
+}
+
+function applyFilters() {
+    const acFilter = document.getElementById('acFilter').value;
+    const roomsFilter = document.getElementById('roomsFilter').value;
+    const ratingFilter = document.getElementById('ratingFilter').value;
+    const priceFilter = document.getElementById('priceFilter').value;
+    
+    alert('Filters applied! This would typically update the houseboat listings based on your selections.');
+}
+</script>
+{% endblock %}

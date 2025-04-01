@@ -1,0 +1,326 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Recommendations{% endblock %}
+
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+    }
+
+    body {
+        background-color: #f7f9fc;
+        color: #333;
+        font-size: 16px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .recommendations-header {
+        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.95) 100%);
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.02);
+        margin-bottom: 2rem;
+        border: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .recommendations-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .active-filters {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+
+    .filter-tag {
+        background: linear-gradient(135deg, rgba(248,249,250,0.9) 0%, rgba(241,243,245,0.9) 100%);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        color: #4a4a4a;
+        border: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .houseboat-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .houseboat-item {
+        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%);
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.02);
+        border: 1px solid rgba(0,0,0,0.03);
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 2rem;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .houseboat-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+        border-color: rgba(0,0,0,0.05);
+    }
+
+    .houseboat-info h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 1rem;
+    }
+
+    .houseboat-details {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        color: #4a4a4a;
+        font-size: 1rem;
+    }
+
+    .detail-item span {
+        font-weight: 500;
+        color: #1a1a1a;
+    }
+
+    .rating-badge {
+        background: linear-gradient(135deg, rgba(248,249,250,0.9) 0%, rgba(241,243,245,0.9) 100%);
+        padding: 0.8rem 1.5rem;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-size: 1rem;
+        color: #4a4a4a;
+        border: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .btn {
+        background-color: #3498db;
+        color: white;
+        padding: 12px 24px;
+        font-size: 16px;
+        border-radius: 30px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn span {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .btn:hover {
+        background-color: #2980b9;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .btn:focus {
+        outline: none;
+        box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+    }
+
+    .btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .btn:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .price-tag {
+        background-color: #3498db;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        margin-bottom: 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .price-tag:hover {
+        background-color: #2980b9;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 3rem;
+        color: #4a4a4a;
+        font-size: 1.2rem;
+    }
+
+    .active-filters {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .filter-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .filter-tag {
+        background: #f8f9fa;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .filter-tag span:first-child {
+        font-weight: 600;
+        color: #2980b9;
+    }
+
+    .details {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .detail-item {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        font-size: 0.95rem;
+    }
+
+    .detail-item span:first-child {
+        font-weight: 600;
+        color: #666;
+    }
+</style>
+
+<div class="container">
+    <div class="recommendations-header">
+        <h1>Recommended Houseboats</h1>
+        
+    <!-- Active Filters Display -->
+    <div class="active-filters">
+        <h3>Active Filters</h3>
+        <div class="filter-tags">
+            {% if filters.capacity != 'all' %}
+                <div class="filter-tag">
+                    <span>Capacity:</span> Up to {{ filters.capacity }} people
+                </div>
+            {% endif %}
+            {% if filters.type != 'all' %}
+                <div class="filter-tag">
+                    <span>Type:</span> {{ filters.type }}
+                </div>
+            {% endif %}
+            {% if filters.bedrooms != 'all' %}
+                <div class="filter-tag">
+                    <span>Bedrooms:</span> {{ filters.bedrooms }}
+                </div>
+            {% endif %}
+            {% if filters.rating != 'all' %}
+                <div class="filter-tag">
+                    <span>Rating:</span> {{ filters.rating }}+ Stars
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    </div>
+
+    <!-- Active Filters Display -->
+
+    {% if houseboats %}
+        <div class="houseboat-list">
+            {% for houseboat in houseboats %}
+                <div class="houseboat-item">
+                    <div class="houseboat-info">
+                        <h2>{{ houseboat.name }}</h2>
+                        <div class="rating-badge">
+                            <span style="color: #f39c12;">★★★★★</span>
+                            <span>({{ houseboat.rating }}/5)</span>
+                        </div>
+                        <div class="houseboat-details">
+                            <div class="detail-item">
+                                <span>AC:</span> {{ houseboat.ac }}
+                            </div>
+                        
+                            <div class="detail-item">
+                                <span>Price:</span> ₹{{ houseboat.price }}/night
+                            </div>
+                       
+                            <div class="detail-item">
+                                <span>Capacity:</span> {{ houseboat.capacity }} people
+                            </div>
+                            <div class="detail-item">
+                                <span>Type:</span> {{ houseboat.type }}
+                            </div>
+                            <div class="detail-item">
+                                <span>Bedrooms:</span> {{ houseboat.bedrooms }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="houseboat-actions">
+                        <div class="price-tag">₹{{ houseboat.price }}/night</div>
+                        <a href="{% url 'houseboat_detail' houseboat_id=houseboat.id %}" class="btn">View Details</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-results">
+            No houseboats found matching your filters. Try adjusting your preferences.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
