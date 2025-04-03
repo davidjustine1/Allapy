@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -6,7 +6,7 @@ from django.contrib.auth import logout
 import pandas as pd
 import os
 from sklearn.metrics.pairwise import cosine_similarity
-
+from .models import Houseboat
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -66,7 +66,30 @@ def logout_view(request):
     return redirect('login')
 
 def houseboat_detail(request, houseboat_id):
-    return render(request, 'houseboat_detail.html', {'houseboat': houseboat})
+    try:
+        # Get details from the dataset using Sl No
+        hb_details = df[df['Sl No'] == int(houseboat_id)].iloc[0]
+        
+        # Generate stars based on rating
+        rating_float = float(hb_details['rating'])
+        full_stars = int(rating_float)
+        has_half_star = (rating_float - full_stars) >= 0.5
+        
+        context = {
+            'name': hb_details['houseboat_name'],
+            'capacity': hb_details['capacity'],
+            'bedrooms': hb_details['bedrooms'],
+            'rating': rating_float,
+            'type': hb_details['houseboat_type'],
+            'price': hb_details['final_price'],
+            'kiv_no': hb_details['kiv_no'],
+            'full_stars': range(full_stars),
+            'has_half_star': has_half_star,
+            'empty_stars': range(5 - full_stars - (1 if has_half_star else 0))
+        }
+        return render(request, 'users/houseboat_detail.html', context)
+    except (IndexError, KeyError):
+        return redirect('home')
 
 @login_required
 def recommendations_view(request):
@@ -88,7 +111,7 @@ def recommendations_view(request):
             
             # Apply filters
             if capacity_filter != 'all':
-                if int(hb_details['capacity']) > int(capacity_filter):
+                if int(hb_details['capacity']) < int(capacity_filter):
                     continue
                     
             if bedrooms_filter != 'all':
@@ -114,8 +137,15 @@ def recommendations_view(request):
                 'id': hb_details['Sl No']
             })
 
+        # Sort houseboats by rating in descending order
+        houseboats.sort(key=lambda x: float(x['rating']), reverse=True)
+        
+        # Add no_results flag to context
+        no_results = len(houseboats) == 0
+        
         context = {
             'houseboats': houseboats,
+            'no_results': no_results,
             'filters': {
                 'capacity': capacity_filter,
                 'bedrooms': bedrooms_filter,
@@ -126,3 +156,18 @@ def recommendations_view(request):
         return render(request, 'users/recommendations.html', context)
 
     return redirect('home')
+
+def booking(request, houseboat_id):
+    houseboat = get_object_or_404(Houseboat, id=houseboat_id)
+    
+    # Calculate GST and total amount
+    gst_amount = float(houseboat.price_per_night) * 0.18
+    total_amount = float(houseboat.price_per_night) + gst_amount
+    
+    context = {
+        'houseboat': houseboat,
+        'gst_amount': f"{gst_amount:.2f}",
+        'total_amount': f"{total_amount:.2f}",
+    }
+    
+    return render(request, 'users/booking.html', context)

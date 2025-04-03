@@ -1,47 +1,77 @@
 {% extends 'users/base.html' %}
 
-{% block title %}{{ houseboat.name }} - Details{% endblock %}
+{% block title %}{{ houseboat.name }} - Alapuzha House Boat{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="houseboat-detail">
-        <div class="image-gallery">
-            <img src="{{ houseboat.main_image }}" alt="{{ houseboat.name }}" class="main-image">
-            <div class="thumbnail-grid">
-                {% for image in houseboat.images %}
-                <img src="{{ image }}" alt="Gallery image" class="thumbnail">
-                {% endfor %}
+        <h1 class="houseboat-title">{{ name }}</h1>
+        
+        <!-- Key details section -->
+        <div class="key-details">
+            <div class="detail-box">
+                <span class="detail-label">Registration No.</span>
+                <span class="detail-value">{{ kiv_no }}</span>
             </div>
+            <div class="detail-box">
+                <span class="detail-label">Capacity</span>
+                <span class="detail-value">{{ capacity }} people</span>
+            </div>
+            <div class="detail-box">
+                <span class="detail-label">Bedrooms</span>
+                <span class="detail-value">{{ bedrooms }}</span>
+            </div>
+            <div class="detail-box">
+                <span class="detail-label">Rating</span>
+                <span class="detail-value">{{ rating }}/5 ★</span>
+            </div>
+            <div class="detail-box">
+                <span class="detail-label">Type</span>
+                <span class="detail-value">{{ type }}</span>
+            </div>
+            <div class="detail-box">
+                <span class="detail-label">Price</span>
+                <span class="detail-value">₹{{ price }}/night</span>
+            </div>
+        </div>
+
+        <div class="rating-badge">
+            <span style="color: #f39c12;">
+                {% for _ in full_stars %}★{% endfor %}
+                {% if has_half_star %}⯨{% endif %}
+                {% for _ in empty_stars %}☆{% endfor %}
+            </span>
+            <span>({{ rating }}/5)</span>
         </div>
         
         <div class="houseboat-info">
-            <h1>{{ houseboat.name }}</h1>
-            <div class="rating">
-                <span class="stars">★★★★★</span>
-                <span class="rating-value">({{ houseboat.rating }}/5)</span>
-            </div>
-            
-            <div class="price-section">
-                <span class="price">₹{{ houseboat.price }}/night</span>
-                <button class="book-now-btn">Book Now</button>
-            </div>
-
-            <div class="description">
-                <h2>About this Houseboat</h2>
-                <p>{{ houseboat.description }}</p>
-            </div>
-
-            <div class="amenities">
-                <h2>Amenities</h2>
-                <div class="amenities-grid">
-                    {% for amenity in houseboat.amenities %}
-                    <div class="amenity-item">
-                        <span class="amenity-icon">{{ amenity.icon }}</span>
-                        <span>{{ amenity.name }}</span>
-                    </div>
-                    {% endfor %}
+            <p>{{ houseboat.description }}</p>
+            <div class="amenities-grid">
+                {% for amenity, value in houseboat.amenities.items %}
+                <div class="amenity-item">
+                    <span class="amenity-icon">{{ value.icon }}</span>
+                    <span>{{ value.text }}</span>
+                </div>
+                {% endfor %}
+                <div class="amenity-item">
+                    <span class="amenity-icon">👥</span>
+                    <span>Capacity: {{ capacity }} people</span>
+                </div>
+                <div class="amenity-item">
+                    <span class="amenity-icon">🏠</span> 
+                    <span>{{ bedrooms }} Bedrooms</span>
+                </div>
+                <div class="amenity-item">
+                    <span class="amenity-icon">📋</span>
+                    <span>Type: {{ type }}</span>
                 </div>
             </div>
+            <div class="price-tag">₹{{ houseboat.price_per_night }}/night</div>
+        </div>
+        
+        <div id="booking" class="booking-section">
+            <h2>Make a Booking</h2>
+            <!-- Add booking form here -->
         </div>
     </div>
 </div>
@@ -147,6 +177,49 @@
         padding: 1rem;
         background: #f8f9fa;
         border-radius: 10px;
+    }
+
+    .houseboat-title {
+        color: #1a1a1a;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .houseboat-title:hover {
+        color: #3498db;
+    }
+
+    .key-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+        padding: 2rem;
+        background: #f8f9fa;
+        border-radius: 15px;
+    }
+
+    .detail-box {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .detail-label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .detail-value {
+        font-size: 1.2rem;
+        color: #333;
+        font-weight: 600;
     }
 </style>
 {% endblock %}

@@ -281,6 +281,16 @@
         transform: translateY(0);
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
+
+    .houseboat-link {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .houseboat-link:hover {
+        color: #3498db;
+    }
 </style>
 
 <div class="container">
@@ -311,9 +321,9 @@
                                 <label>Capacity</label>
                                 <select name="capacity" id="capacityFilter" class="filter-select">
                                     <option value="all">All</option>
-                                    <option value="6">Up to 6 people</option>
-                                    <option value="15">Up to 15 people</option>
-                                    <option value="24">Up to 24 people</option>
+                                    <option value="6">More than 6 people</option>
+                                    <option value="15">More than 15 people</option>
+                                    <option value="24">More than 24 people</option>
                                 </select>
                             </div>
                             <div class="filter-group">
@@ -353,134 +363,142 @@
                 <div id="houseboat-listings">
                     <!-- Houseboat 1 -->
                     <div class="houseboat-card">
-                        <a href="{% url 'houseboat_detail' houseboat_id=173 %}" style="text-decoration: none; color: inherit;">
-                            <h3>Luxury Deluxe Houseboat</h3>
-                            <div class="rating-badge">
-                                <span style="color: #f39c12;">★★★★★</span>
-                                <span>(4.8/5)</span>
+                        <h3>
+                            <a href="{% url 'houseboat_detail' houseboat_id=1 %}" class="houseboat-link">
+                                Rosey Houseboat
+                            </a>
+                        </h3>
+                        <div class="rating-badge">
+                            <span style="color: #f39c12;">★★★★★</span>
+                            <span>(4.8/5)</span>
+                        </div>
+                        <div class="amenities-grid">
+                            <div class="amenity-item">
+                                <span class="amenity-icon">❄️</span>
+                                <span>3 AC Bedrooms</span>
                             </div>
-                            <div class="amenities-grid">
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">❄️</span>
-                                    <span>3 AC Bedrooms</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">🍳</span>
-                                    <span>Modern Kitchen</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">🛋️</span>
-                                    <span>Upper Deck Lounge</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">🚿</span>
-                                    <span>3 Bathrooms</span>
-                                </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🍳</span>
+                                <span>Modern Kitchen</span>
                             </div>
-                            <div class="price-tag">₹25,000/night</div>
-                        </a>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🛋️</span>
+                                <span>Upper Deck Lounge</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🚿</span>
+                                <span>3 Bathrooms</span>
+                            </div>
+                        </div>
+                        <div class="price-tag">₹25,000/night</div>
                         <div class="button-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <button class="btn" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=173 %}'">View Details</button>
-                            <button class="btn" style="background-color: #28a745;" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=173 %}#booking'">Book Now</button>
+                            <button class="btn" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=1 %}'">View Details</button>
+                            <button class="btn" style="background-color: #28a745;" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=1 %}#booking'">Book Now</button>
                         </div>
                     </div>
 
                     <!-- Houseboat 2 -->
                     <div class="houseboat-card">
-                        <a href="{% url 'houseboat_detail' houseboat_id=321 %}" style="text-decoration: none; color: inherit;">
-                            <h3>Premium Family Houseboat</h3>
-                            <div class="rating-badge">
-                                <span style="color: #f39c12;">★★★★☆</span>
-                                <span>(4.2/5)</span>
+                        <h3>
+                            <a href="{% url 'houseboat_detail' houseboat_id=2 %}" class="houseboat-link">
+                                Premium Family Houseboat
+                            </a>
+                        </h3>
+                        <div class="rating-badge">
+                            <span style="color: #f39c12;">★★★★☆</span>
+                            <span>(4.2/5)</span>
+                        </div>
+                        <div class="amenities-grid">
+                            <div class="amenity-item">
+                                <span class="amenity-icon">❄️</span>
+                                <span>2 AC Bedrooms</span>
                             </div>
-                            <div class="amenities-grid">
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">❄️</span>
-                                    <span>2 AC Bedrooms</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">👨‍👩‍👧‍👦</span>
-                                    <span>Family Room</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">🎮</span>
-                                    <span>Kids Play Area</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">🚿</span>
-                                    <span>2 Bathrooms</span>
-                                </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">👨‍👩‍👧‍👦</span>
+                                <span>Family Room</span>
                             </div>
-                            <div class="price-tag">₹18,000/night</div>
-                        </a>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🎮</span>
+                                <span>Kids Play Area</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🚿</span>
+                                <span>2 Bathrooms</span>
+                            </div>
+                        </div>
+                        <div class="price-tag">₹18,000/night</div>
                         <div class="button-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <button class="btn" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=321 %}'">View Details</button>
-                            <button class="btn" style="background-color: #28a745;" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=321 %}#booking'">Book Now</button>
+                            <button class="btn" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=2 %}'">View Details</button>
+                            <button class="btn" style="background-color: #28a745;" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=2 %}#booking'">Book Now</button>
                         </div>
                     </div>
 
                     <!-- Houseboat 3 -->
                     <div class="houseboat-card"> 
-                        <a href="{% url 'houseboat_detail' houseboat_id=322 %}" style="text-decoration: none; color: inherit;">
-                            <h3>Traditional Eco Houseboat</h3>
-                            <div class="rating-badge">
-                                <span style="color: #f39c12;">★★★★★</span>
-                                <span>(4.9/5)</span>
+                        <h3>
+                            <a href="{% url 'houseboat_detail' houseboat_id=3 %}" class="houseboat-link">
+                                Traditional Eco Houseboat
+                            </a>
+                        </h3>
+                        <div class="rating-badge">
+                            <span style="color: #f39c12;">★★★★★</span>
+                            <span>(4.9/5)</span>
+                        </div>
+                        <div class="amenities-grid">
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🌿</span>
+                                <span>Eco-friendly Materials</span>
                             </div>
-                            <div class="amenities-grid">
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">🌿</span>
-                                    <span>Eco-friendly Materials</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">🌞</span>
-                                    <span>Natural Ventilation</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">🏠</span>
-                                    <span>Traditional Design</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">🚿</span>
-                                    <span>1 Bathroom</span>
-                                </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🌞</span>
+                                <span>Natural Ventilation</span>
                             </div>
-                            <div class="price-tag">₹12,000/night</div>
-                        </a>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🏠</span>
+                                <span>Traditional Design</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🚿</span>
+                                <span>1 Bathroom</span>
+                            </div>
+                        </div>
+                        <div class="price-tag">₹12,000/night</div>
                         <div class="button-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <button class="btn" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=322 %}'">View Details</button>
-                            <button class="btn" style="background-color: #28a745;" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=322 %}#booking'">Book Now</button>
+                            <button class="btn" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=3 %}'">View Details</button>
+                            <button class="btn" style="background-color: #28a745;" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=3 %}#booking'">Book Now</button>
                         </div>
                     </div>
 
                     <!-- Houseboat 4 -->
                     <div class="houseboat-card">
-                        <a href="{% url 'houseboat_detail' houseboat_id=4 %}" style="text-decoration: none; color: inherit;">
-                            <h3>Royal Suite Houseboat</h3>
-                            <div class="rating-badge">
-                                <span style="color: #f39c12;">★★★★★</span>
-                                <span>(4.7/5)</span>
+                        <h3>
+                            <a href="{% url 'houseboat_detail' houseboat_id=4 %}" class="houseboat-link">
+                                Royal Suite Houseboat
+                            </a>
+                        </h3>
+                        <div class="rating-badge">
+                            <span style="color: #f39c12;">★★★★★</span>
+                            <span>(4.7/5)</span>
+                        </div>
+                        <div class="amenities-grid">
+                            <div class="amenity-item">
+                                <span class="amenity-icon">❄️</span>
+                                <span>4 AC Bedrooms</span>
                             </div>
-                            <div class="amenities-grid">
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">❄️</span>
-                                    <span>4 AC Bedrooms</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">🏊‍♂️</span>
-                                    <span>Private Pool</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">🍷</span>
-                                    <span>Wine Cellar</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">🚿</span>
-                                    <span>4 Bathrooms</span>
-                                </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🏊‍♂️</span>
+                                <span>Private Pool</span>
                             </div>
-                            <div class="price-tag">₹35,000/night</div>
-                        </a>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🍷</span>
+                                <span>Wine Cellar</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🚿</span>
+                                <span>4 Bathrooms</span>
+                            </div>
+                        </div>
+                        <div class="price-tag">₹35,000/night</div>
                         <div class="button-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                             <button class="btn" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=4 %}'">View Details</button>
                             <button class="btn" style="background-color: #28a745;" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=4 %}#booking'">Book Now</button>
@@ -489,32 +507,34 @@
 
                     <!-- Houseboat 5 -->
                     <div class="houseboat-card">
-                        <a href="{% url 'houseboat_detail' houseboat_id=5 %}" style="text-decoration: none; color: inherit;">
-                            <h3>Romantic Couple Houseboat</h3>
-                            <div class="rating-badge">
-                                <span style="color: #f39c12;">★★★★★</span>
-                                <span>(4.6/5)</span>
+                        <h3>
+                            <a href="{% url 'houseboat_detail' houseboat_id=5 %}" class="houseboat-link">
+                                Romantic Couple Houseboat
+                            </a>
+                        </h3>
+                        <div class="rating-badge">
+                            <span style="color: #f39c12;">★★★★★</span>
+                            <span>(4.6/5)</span>
+                        </div>
+                        <div class="amenities-grid">
+                            <div class="amenity-item">
+                                <span class="amenity-icon">❄️</span>
+                                <span>1 AC Bedroom</span>
                             </div>
-                            <div class="amenities-grid">
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">❄️</span>
-                                    <span>1 AC Bedroom</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">🌅</span>
-                                    <span>Sunset Deck</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">🍽️</span>
-                                    <span>Private Dining</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <span class="amenity-icon">🚿</span>
-                                    <span>1 Bathroom</span>
-                                </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🌅</span>
+                                <span>Sunset Deck</span>
                             </div>
-                            <div class="price-tag">₹15,000/night</div>
-                        </a>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🍽️</span>
+                                <span>Private Dining</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🚿</span>
+                                <span>1 Bathroom</span>
+                            </div>
+                        </div>
+                        <div class="price-tag">₹15,000/night</div>
                         <div class="button-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                             <button class="btn" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=5 %}'">View Details</button>
                             <button class="btn" style="background-color: #28a745;" onclick="window.location.href='{% url 'houseboat_detail' houseboat_id=5 %}#booking'">Book Now</button>
