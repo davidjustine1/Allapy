@@ -3,10 +3,101 @@
 {% block title %}Login - Alappuzha House Boat{% endblock %}
 
 {% block content %}
-<div class="form-container">
-    <h2>Welcome Back</h2>
-    <p style="text-align: center; color: #666; margin-bottom: 2rem;">Please login to your account</p>
-    
+<style>
+    .auth-container {
+        max-width: 400px;
+        margin: 4rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: var(--shadow-soft);
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-header h2 {
+        font-size: 2rem;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-header p {
+        color: var(--text-muted);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-dark);
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: var(--airbnb-red);
+        box-shadow: 0 0 0 2px rgba(255,90,95,0.2);
+    }
+
+    .auth-btn {
+        width: 100%;
+        padding: 0.75rem;
+        background: var(--airbnb-red);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .auth-btn:hover {
+        background: #E00B41;
+        transform: translateY(-1px);
+    }
+
+    .auth-link {
+        color: var(--airbnb-red);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .auth-link:hover {
+        text-decoration: underline;
+    }
+
+    .error-message {
+        background: #FDE8E8;
+        color: #E00B41;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="auth-container">
+    <div class="auth-header">
+        <h2>Welcome Back</h2>
+        <p>Please login to your account</p>
+    </div>
+
     {% if form.errors %}
     <div class="error-message">
         Invalid username or password. Please try again.
@@ -23,11 +114,11 @@
             <label for="id_password">Password</label>
             {{ form.password }}
         </div>
-        <button type="submit" class="btn">Login</button>
+        <button type="submit" class="auth-btn">Login</button>
     </form>
     
-    <p style="text-align: center; margin-top: 1.5rem; color: #666;">
-        Don't have an account? <a href="{% url 'signup' %}" style="color: #1e3c72; text-decoration: none;">Sign up</a>
+    <p style="text-align: center; margin-top: 1.5rem; color: var(--text-muted);">
+        Don't have an account? <a href="{% url 'signup' %}" class="auth-link">Sign up</a>
     </p>
 </div>
 {% endblock %}
