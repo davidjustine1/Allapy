@@ -20,7 +20,10 @@
                     url('/static/blue-jelly-amber-10-th.webp');
         background-size: cover;
         background-position: center;
-        margin: -2rem -2rem 2rem -2rem;
+        max-width: 100%;
+        width: 100%;
+        overflow: hidden;  /* Prevent overflow */
+        margin: 0 0 2rem 0; /* Remove negative margins */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -30,7 +33,9 @@
 
     .hero-content {
         max-width: 800px;
+        width: 90%;  /* Make it responsive */
         padding: 2rem;
+        margin: 0 auto;  /* Center the content */
     }
 
     .hero-content h1 {
@@ -49,24 +54,31 @@
     }
 
     .filters-section {
+        max-width: 1000px;
+        margin: 2rem auto 3rem auto;
         background: white;
-        padding: 1.5rem 2rem;
+        padding: 2rem;
         border-radius: 16px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        margin: 2rem 0 3rem 0;
     }
 
     .filters-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
     }
 
     .filters-header h3 {
         color: var(--text-dark);
-        font-size: 1.2rem;
+        font-size: 1.8rem;
         font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .filters-header p {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
     }
 
     .filters-row {
@@ -141,10 +153,18 @@
         transform: translateY(-1px);
     }
 
+    .container {
+        max-width: 1200px;
+        width: 90%;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+
     .houseboat-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
         gap: 2rem;
+        margin-top: 2rem;
     }
 
     .houseboat-card {
@@ -235,6 +255,7 @@
     <div class="filters-section">
         <div class="filters-header">
             <h3>Find your perfect houseboat</h3>
+            <p>Filter through our collection of luxury houseboats</p>
         </div>
         <form method="POST" action="{% url 'recommendations' %}">
             {% csrf_token %}
