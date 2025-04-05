@@ -60,7 +60,23 @@ def signup_view(request):
 
 @login_required
 def home_view(request):
-    return render(request, 'users/home.html')
+    # Get top 10 houseboats sorted by rating
+    top_houseboats = df.nlargest(10, 'rating').apply(lambda x: {
+        'id': x['Sl No'],
+        'name': x['houseboat_name'],
+        'rating': float(x['rating']),
+        'capacity': x['capacity'],
+        'bedrooms': x['bedrooms'],
+        'type': x['houseboat_type'],
+        'price': float(x['final_price']),
+        'kiv_no': x['kiv_no'],
+        'image_url': '/static/houseboat1.jpg'  # Add static image URL
+    }, axis=1).tolist()
+    
+    return render(request, 'users/home.html', {
+        'houseboats': top_houseboats,
+        'user': request.user
+    })
 
 def logout_view(request):
     logout(request)
@@ -70,9 +86,10 @@ def houseboat_detail(request, houseboat_id):
     try:
         hb_details = df[df['Sl No'] == int(houseboat_id)].iloc[0]
         
-        # Add 10% markup to base price and round to nearest hundred
+        # Get base price from dataset
         base_price = float(hb_details['final_price'])
-        marked_up_price = round(base_price * 1.10 / 100) * 100  # Round to nearest hundred
+        peak_price = base_price * 1.20  # 20% higher for peak season
+        off_peak_price = base_price * 0.85  # 15% lower for off-peak season
         
         rating_float = float(hb_details['rating'])
         full_stars = int(rating_float)
@@ -84,7 +101,9 @@ def houseboat_detail(request, houseboat_id):
             'bedrooms': hb_details['bedrooms'],
             'rating': rating_float,
             'type': hb_details['houseboat_type'],
-            'price': int(marked_up_price),  # Convert to integer to remove decimals
+            'price': base_price,
+            'peak_price': peak_price,
+            'off_peak_price': off_peak_price,
             'kiv_no': hb_details['kiv_no'],
             'full_stars': range(full_stars),
             'has_half_star': has_half_star,

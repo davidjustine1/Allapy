@@ -82,7 +82,15 @@
                     <div id="price-details" class="price-details" style="display: none;">
                         <div class="price-breakdown">
                             <div class="price-row">
-                                <span>Base Price (₹{{ price }} × <span id="nights">0</span> nights)</span>
+                                <span>Nights</span>
+                                <span id="nights">0</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Base Price</span>
+                                <span>₹{{ price }}/night</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Calculated Price (<span id="peak_nights">0</span> peak, <span id="off_peak_nights">0</span> off-peak)</span>
                                 <span id="base_total">₹0</span>
                             </div>
                             <div class="price-row">
@@ -725,7 +733,14 @@
     const checkIn = document.getElementById('check_in');
     const checkOut = document.getElementById('check_out');
     const priceDetails = document.getElementById('price-details');
-    const basePrice = {{ price }};  // This is already marked up 10%
+    const basePrice = {{ price }};
+    const peakPrice = {{ peak_price }};  // Peak season price (20% markup)
+    const offPeakPrice = {{ off_peak_price }};  // Off-peak price (15% discount)
+
+    function isWeekend(date) {
+        const day = date.getDay();
+        return day === 0 || day === 6; // 0 is Sunday, 6 is Saturday
+    }
 
     function calculatePrice(checkInDate, checkOutDate) {
         const start = new Date(checkInDate);
@@ -733,24 +748,34 @@
         const nights = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
         
         if (nights > 0) {
-            // Use already marked up base price
-            const baseTotal = basePrice * nights;
+            let totalPrice = 0;
+            let peakNights = 0;
+            let offPeakNights = 0;
+            let currentDate = new Date(start);
             
-            // Calculate platform fee (10%)
-            const platformFee = baseTotal * 0.10;
+            // Calculate price for each night
+            for (let i = 0; i < nights; i++) {
+                if (isWeekend(currentDate)) {
+                    totalPrice += peakPrice;
+                    peakNights++;
+                } else {
+                    totalPrice += offPeakPrice;
+                    offPeakNights++;
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
             
-            // Subtotal after platform fee
-            const subtotal = baseTotal + platformFee;
-            
-            // Calculate GST (18%)
+            // Calculate fees
+            const platformFee = totalPrice * 0.10;
+            const subtotal = totalPrice + platformFee;
             const gst = subtotal * 0.18;
-            
-            // Calculate final total
             const finalTotal = subtotal + gst;
 
             // Update display
             document.getElementById('nights').textContent = nights;
-            document.getElementById('base_total').textContent = `₹${baseTotal.toFixed(2)}`;
+            document.getElementById('peak_nights').textContent = peakNights;
+            document.getElementById('off_peak_nights').textContent = offPeakNights;
+            document.getElementById('base_total').textContent = `₹${totalPrice.toFixed(2)}`;
             document.getElementById('platform_fee').textContent = `₹${platformFee.toFixed(2)}`;
             document.getElementById('gst').textContent = `₹${gst.toFixed(2)}`;
             document.getElementById('total').textContent = `₹${finalTotal.toFixed(2)}`;
