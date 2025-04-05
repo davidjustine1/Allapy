@@ -35,14 +35,6 @@
             </div>
         </div>
 
-        <div class="rating-badge">
-            <span style="color: #f39c12;">
-                {% for _ in full_stars %}★{% endfor %}
-                {% if has_half_star %}⯨{% endif %}
-                {% for _ in empty_stars %}☆{% endfor %}
-            </span>
-            <span>({{ rating }}/5)</span>
-        </div>
         
         <div class="houseboat-info">
             <p>{{ houseboat.description }}</p>
@@ -53,27 +45,76 @@
                     <span>{{ value.text }}</span>
                 </div>
                 {% endfor %}
-                <div class="amenity-item">
-                    <span class="amenity-icon">👥</span>
-                    <span>Capacity: {{ capacity }} people</span>
-                </div>
-                <div class="amenity-item">
-                    <span class="amenity-icon">🏠</span> 
-                    <span>{{ bedrooms }} Bedrooms</span>
-                </div>
-                <div class="amenity-item">
-                    <span class="amenity-icon">📋</span>
-                    <span>Type: {{ type }}</span>
-                </div>
-            </div>
-            <div class="price-tag">₹{{ houseboat.price_per_night }}/night</div>
+                
+               
+            
         </div>
         
+        <!-- Add divider -->
+        <div class="section-divider"></div>
+        
         <div id="booking" class="booking-section">
-            <h2>Make a Booking</h2>
-            <!-- Add booking form here -->
+            <div class="booking-container">
+                <h2>Make a Booking</h2>
+                <form class="booking-form" method="POST">
+                    {% csrf_token %}
+                    <div class="booking-grid">
+                        <div class="form-group">
+                            <label for="check_in">CHECK-IN</label>
+                            <input type="date" 
+                                   id="check_in" 
+                                   name="check_in" 
+                                   class="date-input" 
+                                   min="{{ today|date:'Y-m-d' }}" 
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <label for="check_out">CHECKOUT</label>
+                            <input type="date" 
+                                   id="check_out" 
+                                   name="check_out" 
+                                   class="date-input" 
+                                   disabled
+                                   required>
+                        </div>
+                    </div>
+
+                    <div id="price-details" class="price-details" style="display: none;">
+                        <div class="price-breakdown">
+                            <div class="price-row">
+                                <span>Base Price (₹{{ price }} × <span id="nights">0</span> nights)</span>
+                                <span id="base_total">₹0</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Platform Fee (10%)</span>
+                                <span id="platform_fee">₹0</span>
+                            </div>
+                            <div class="price-row">
+                                <span>GST (18%)</span>
+                                <span id="gst">₹0</span>
+                            </div>
+                            <div class="price-row total">
+                                <span>Total Amount</span>
+                                <span id="total">₹0</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="book-now-btn">Confirm Booking</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div class="booking-success" id="bookingSuccess">
+    <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path class="checkmark" d="M20 6L9 17L4 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+    <div class="success-message">Booking Confirmed!</div>
+    <p>Thank you for booking with us</p>
 </div>
 
 <style>
@@ -221,5 +262,535 @@
         color: #333;
         font-weight: 600;
     }
+
+    .booking-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #eee;
+        text-align: center;
+    }
+
+    .booking-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .booking-container h2 {
+        font-size: 2rem;
+        color: var(--text-dark);
+        margin-bottom: 2rem;
+        font-weight: 600;
+    }
+
+    .booking-form {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .booking-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        margin-bottom: 2rem;
+        border: 1px solid #ddd;
+        border-radius: 32px;
+        overflow: hidden;
+        background: white;
+    }
+
+    .form-group {
+        text-align: left;
+        position: relative;
+        padding: 0.75rem 1.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .form-group:first-child {
+        border-right: 1px solid #ddd;
+    }
+
+    .form-group:hover {
+        background: #f8f9fa;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.25rem;
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .date-input {
+        width: 100%;
+        padding: 0.25rem 0;
+        border: none;
+        font-size: 1.1rem;
+        color: var(--text-dark);
+        font-family: inherit;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .date-input:disabled {
+        cursor: not-allowed;
+        color: var(--text-muted);
+    }
+
+    .date-input:focus {
+        outline: none;
+    }
+
+    .booking-grid:focus-within {
+        border-color: var(--airbnb-red);
+        box-shadow: 0 0 0 2px rgba(255,90,95,0.1);
+    }
+
+    .book-now-btn {
+        width: 100%;
+        padding: 1.2rem;
+        background: var(--airbnb-red);
+        color: white;
+        border: none;
+        border-radius: 16px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-top: 2rem;
+    }
+
+    .book-now-btn:hover {
+        background: #E00B41;
+        transform: translateY(-1px);
+    }
+
+    .description, .amenities {
+        margin-bottom: 2rem;
+    }
+
+    .description h2, .amenities h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .amenities-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+
+    .amenity-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+
+    .houseboat-title {
+        color: #1a1a1a;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .houseboat-title:hover {
+        color: #3498db;
+    }
+
+    .key-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+        padding: 2rem;
+        background: #f8f9fa;
+        border-radius: 15px;
+    }
+
+    .detail-box {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .detail-label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .detail-value {
+        font-size: 1.2rem;
+        color: #333;
+        font-weight: 600;
+    }
+
+    .booking-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #eee;
+        text-align: center;
+    }
+
+    .booking-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .booking-container h2 {
+        font-size: 2rem;
+        color: var(--text-dark);
+        margin-bottom: 2rem;
+        font-weight: 600;
+    }
+
+    .booking-form {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .booking-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        text-align: left;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.75rem;
+        color: var(--text-dark);
+        font-weight: 500;
+        font-size: 1rem;
+    }
+
+    .date-input {
+        width: 100%;
+        padding: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        color: var(--text-dark);
+        text-align: center;
+        font-family: inherit;
+        transition: all 0.2s;
+    }
+
+    .date-input:focus {
+        outline: none;
+        border-color: var(--airbnb-red);
+        box-shadow: 0 0 0 2px rgba(255,90,95,0.1);
+    }
+
+    .book-now-btn {
+        background: var(--airbnb-red);
+        color: white;
+        padding: 1rem 3rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .book-now-btn:hover {
+        background: #E00B41;
+        transform: translateY(-2px);
+    }
+
+    .booking-section {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        text-align: center;
+    }
+
+    .booking-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .booking-form {
+        margin-top: 1.5rem;
+        padding: 1.5rem;
+        background: #f8f9fa;
+        border-radius: 12px;
+    }
+
+    .date-inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-dark);
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--airbnb-red);
+        box-shadow: 0 0 0 2px rgba(255,90,95,0.1);
+    }
+
+    .section-divider {
+        height: 2px;
+        background: linear-gradient(to right, 
+            rgba(255,90,95,0.1), 
+            var(--airbnb-red), 
+            rgba(255,90,95,0.1));
+        margin: 4rem 0;
+        opacity: 0.8;
+        border-radius: 2px;
+        box-shadow: 0 1px 3px rgba(255,90,95,0.2);
+    }
+
+    .price-details {
+        margin-top: 2rem;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .price-breakdown {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+    }
+
+    .price-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        color: var(--text-dark);
+    }
+
+    .price-row.total {
+        border-top: 2px solid #eee;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Updated success message styles */
+    .booking-success {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        background: white;
+        padding: 4rem;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        text-align: center;
+        z-index: 1001;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .booking-success.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    .success-icon {
+        width: 120px;
+        height: 120px;
+        background: #4CAF50;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        box-shadow: 0 8px 20px rgba(76,175,80,0.3);
+    }
+
+    .success-icon svg {
+        width: 60px;
+        height: 60px;
+        color: white;
+        stroke-width: 2.5;
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100;
+        animation: drawCheck 1s ease forwards;
+    }
+
+    .success-message {
+        font-size: 2.2rem;
+        color: #2C3E50;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        opacity: 0;
+        transform: translateY(10px);
+        animation: fadeInUp 0.6s ease 0.4s forwards;
+    }
+
+    .success-message + p {
+        color: #666;
+        font-size: 1.1rem;
+        opacity: 0;
+        transform: translateY(10px);
+        animation: fadeInUp 0.6s ease 0.6s forwards;
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.75);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.5s ease;
+    }
+
+    .overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    @keyframes drawCheck {
+        from {
+            stroke-dashoffset: 100;
+        }
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 0;
+        }
+        to {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+    }
 </style>
+
+<script>
+    const checkIn = document.getElementById('check_in');
+    const checkOut = document.getElementById('check_out');
+    const priceDetails = document.getElementById('price-details');
+    const basePrice = {{ price }};  // This is already marked up 10%
+
+    function calculatePrice(checkInDate, checkOutDate) {
+        const start = new Date(checkInDate);
+        const end = new Date(checkOutDate);
+        const nights = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+        
+        if (nights > 0) {
+            // Use already marked up base price
+            const baseTotal = basePrice * nights;
+            
+            // Calculate platform fee (10%)
+            const platformFee = baseTotal * 0.10;
+            
+            // Subtotal after platform fee
+            const subtotal = baseTotal + platformFee;
+            
+            // Calculate GST (18%)
+            const gst = subtotal * 0.18;
+            
+            // Calculate final total
+            const finalTotal = subtotal + gst;
+
+            // Update display
+            document.getElementById('nights').textContent = nights;
+            document.getElementById('base_total').textContent = `₹${baseTotal.toFixed(2)}`;
+            document.getElementById('platform_fee').textContent = `₹${platformFee.toFixed(2)}`;
+            document.getElementById('gst').textContent = `₹${gst.toFixed(2)}`;
+            document.getElementById('total').textContent = `₹${finalTotal.toFixed(2)}`;
+            
+            priceDetails.style.display = 'block';
+        }
+    }
+
+    checkIn.addEventListener('change', function() {
+        checkOut.disabled = false;
+        checkOut.min = checkIn.value;
+        if (checkOut.value) {
+            calculatePrice(checkIn.value, checkOut.value);
+        }
+    });
+
+    checkOut.addEventListener('change', function() {
+        if (checkIn.value) {
+            calculatePrice(checkIn.value, checkOut.value);
+        }
+    });
+
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const overlay = document.getElementById('overlay');
+        const successDiv = document.getElementById('bookingSuccess');
+        
+        // Show overlay first
+        overlay.classList.add('show');
+        
+        // Show success message with slight delay
+        setTimeout(() => {
+            successDiv.classList.add('show');
+        }, 100);
+        
+        // Redirect after animations complete
+        setTimeout(() => {
+            window.location.href = "{% url 'home' %}";
+        }, 2500);
+    });
+</script>
 {% endblock %}
