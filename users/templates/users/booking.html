@@ -1,0 +1,340 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Book {{ houseboat.name }} - Alappuzha House Boat{% endblock %}
+
+{% block content %}
+<style>
+    .booking-container {
+        max-width: 800px;
+        margin: 4rem auto;
+        padding: 2rem;
+    }
+
+    .booking-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        padding: 2rem;
+    }
+
+    .booking-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .booking-header h2 {
+        font-size: 1.8rem;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .date-picker-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-dark);
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--airbnb-red);
+        box-shadow: 0 0 0 2px rgba(255,90,95,0.1);
+    }
+
+    .price-breakdown {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin: 2rem 0;
+    }
+
+    .price-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        color: var(--text-dark);
+    }
+
+    .price-row.total {
+        border-top: 2px solid #eee;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .book-btn {
+        width: 100%;
+        padding: 1rem;
+        background: var(--airbnb-red);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .book-btn:hover {
+        background: #E00B41;
+        transform: translateY(-1px);
+    }
+
+    .booking-notes {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-top: 1rem;
+    }
+
+    .kiv-number {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .houseboat-meta {
+        color: var(--text-dark);
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .price-per-night {
+        margin: 1rem 0;
+    }
+
+    .price-per-night .amount {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+
+    .price-per-night .unit {
+        color: var(--text-muted);
+    }
+
+    .booking-success {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.9);
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+        text-align: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .booking-success.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    .success-icon {
+        width: 100px;
+        height: 100px;
+        background: #4CAF50;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+    }
+
+    .success-icon svg {
+        width: 50px;
+        height: 50px;
+        color: white;
+        stroke-width: 3;
+    }
+
+    .success-message {
+        font-size: 2rem;
+        color: #2C3E50;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    @keyframes checkmark {
+        0% { stroke-dashoffset: 100; }
+        100% { stroke-dashoffset: 0; }
+    }
+</style>
+
+<div class="booking-container">
+    <div class="booking-card">
+        <div class="booking-header">
+            <h2>Book {{ houseboat.name }}</h2>
+            <p class="kiv-number">KIV Number: {{ houseboat.kiv_no }}</p>
+            <div class="houseboat-meta">
+                <span>{{ houseboat.capacity }} guests</span> •
+                <span>{{ houseboat.bedrooms }} bedrooms</span> •
+                <span>{{ houseboat.type }}</span>
+            </div>
+            <div class="price-per-night">
+                <span class="amount">₹{{ houseboat.price_per_night }}</span>
+                <span class="unit">per night (includes 10% service fee)</span>
+            </div>
+        </div>
+
+        <form method="post" action="{% url 'booking' houseboat_id=houseboat.id %}">
+            {% csrf_token %}
+            <div class="date-picker-group">
+                <div class="form-group">
+                    <label for="check_in">Check-in Date</label>
+                    <input type="date" id="check_in" name="check_in" class="form-control" 
+                           min="{{ today|date:'Y-m-d' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="check_out">Check-out Date</label>
+                    <input type="date" id="check_out" name="check_out" class="form-control" 
+                           min="{{ today|date:'Y-m-d' }}" required>
+                </div>
+            </div>
+
+            <div class="price-breakdown">
+                <div class="price-row">
+                    <span>₹{{ houseboat.price_per_night }} × <span id="nights">0</span> nights</span>
+                    <span id="subtotal">₹0</span>
+                </div>
+                <div class="price-row">
+                    <span>GST (18%)</span>
+                    <span id="gst">₹{{ gst_amount }}</span>
+                </div>
+                <div class="price-row total">
+                    <span>Total</span>
+                    <span id="total">₹{{ total_amount }}</span>
+                </div>
+            </div>
+
+            <button type="submit" class="book-btn">Confirm Booking</button>
+            
+            <p class="booking-notes">
+                Free cancellation up to 24 hours before check-in
+            </p>
+        </form>
+    </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div class="booking-success" id="bookingSuccess">
+    <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+    </div>
+    <div class="success-message">Booking Confirmed!</div>
+    <p>Thank you for booking with us.</p>
+</div>
+
+<script>
+    const checkIn = document.getElementById('check_in');
+    const checkOut = document.getElementById('check_out');
+    const nightsSpan = document.getElementById('nights');
+    const subtotalSpan = document.getElementById('subtotal');
+    const gstSpan = document.getElementById('gst');
+    const totalSpan = document.getElementById('total');
+    const basePrice = {{ price }};  // Original price from dataset
+    const priceWithMarkup = basePrice * 1.10;  // Add 10% markup
+    
+    function calculatePrice(checkInDate, checkOutDate) {
+        const start = new Date(checkInDate);
+        const end = new Date(checkOutDate);
+        const nights = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+        
+        if (nights > 0) {
+            let totalPrice = priceWithMarkup * nights;  // Use price with markup
+            
+            // Add GST (18%)
+            const gst = totalPrice * 0.18;
+            const finalTotal = totalPrice + gst;
+
+            // Update display
+            nightsSpan.textContent = nights;
+            subtotalSpan.textContent = `₹${totalPrice.toFixed(2)}`;
+            gstSpan.textContent = `₹${gst.toFixed(2)}`;
+            totalSpan.textContent = `₹${finalTotal.toFixed(2)}`;
+        }
+    }
+
+    checkIn.addEventListener('change', function() {
+        checkOut.min = checkIn.value;
+        if (checkOut.value) {
+            calculatePrice(checkIn.value, checkOut.value);
+        }
+    });
+
+    checkOut.addEventListener('change', function() {
+        if (checkIn.value) {
+            calculatePrice(checkIn.value, checkOut.value);
+        }
+    });
+
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Show overlay and success message
+        const overlay = document.getElementById('overlay');
+        const successDiv = document.getElementById('bookingSuccess');
+        const checkmark = successDiv.querySelector('svg polyline');
+        
+        // Add the show classes
+        overlay.classList.add('show');
+        successDiv.classList.add('show');
+        
+        // Animate checkmark
+        checkmark.style.strokeDasharray = '100';
+        checkmark.style.strokeDashoffset = '100';
+        checkmark.style.animation = 'checkmark 0.8s ease-in-out forwards';
+        
+        // Redirect after animation
+        setTimeout(() => {
+            window.location.href = "{% url 'home' %}";
+        }, 2000);
+    });
+</script>
+{% endblock %}

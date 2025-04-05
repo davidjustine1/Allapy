@@ -10,6 +10,7 @@ from .models import Houseboat
 
 from django.conf import settings
 from django.conf.urls.static import static
+from datetime import datetime, date
 
 
 # Define file paths
@@ -67,10 +68,12 @@ def logout_view(request):
 
 def houseboat_detail(request, houseboat_id):
     try:
-        # Get details from the dataset using Sl No
         hb_details = df[df['Sl No'] == int(houseboat_id)].iloc[0]
         
-        # Generate stars based on rating
+        # Add 10% markup to base price and round to nearest hundred
+        base_price = float(hb_details['final_price'])
+        marked_up_price = round(base_price * 1.10 / 100) * 100  # Round to nearest hundred
+        
         rating_float = float(hb_details['rating'])
         full_stars = int(rating_float)
         has_half_star = (rating_float - full_stars) >= 0.5
@@ -81,7 +84,7 @@ def houseboat_detail(request, houseboat_id):
             'bedrooms': hb_details['bedrooms'],
             'rating': rating_float,
             'type': hb_details['houseboat_type'],
-            'price': hb_details['final_price'],
+            'price': int(marked_up_price),  # Convert to integer to remove decimals
             'kiv_no': hb_details['kiv_no'],
             'full_stars': range(full_stars),
             'has_half_star': has_half_star,
@@ -157,17 +160,30 @@ def recommendations_view(request):
 
     return redirect('home')
 
+def calculate_price_with_rules(base_price_per_night, check_in_date_str, check_out_date_str, platform_fee_percent=10.0):
+    # Add the calculate_price_with_rules function here from your code
+    pass
+
 def booking(request, houseboat_id):
-    houseboat = get_object_or_404(Houseboat, id=houseboat_id)
-    
-    # Calculate GST and total amount
-    gst_amount = float(houseboat.price_per_night) * 0.18
-    total_amount = float(houseboat.price_per_night) + gst_amount
-    
-    context = {
-        'houseboat': houseboat,
-        'gst_amount': f"{gst_amount:.2f}",
-        'total_amount': f"{total_amount:.2f}",
-    }
-    
-    return render(request, 'users/booking.html', context)
+    try:
+        houseboat_details = df[df['Sl No'] == int(houseboat_id)].iloc[0]
+        
+        # Get base price from dataset
+        base_price = float(houseboat_details['final_price'])
+        
+        context = {
+            'houseboat': {
+                'name': houseboat_details['houseboat_name'],
+                'kiv_no': houseboat_details['kiv_no'],
+                'price_per_night': base_price,
+                'type': houseboat_details['houseboat_type'],
+                'capacity': houseboat_details['capacity'],
+                'bedrooms': houseboat_details['bedrooms']
+            },
+            'platform_fee': 10.0,  # 10% platform fee
+            'today': date.today(),
+        }
+        
+        return render(request, 'users/booking.html', context)
+    except (IndexError, KeyError):
+        return redirect('home')
